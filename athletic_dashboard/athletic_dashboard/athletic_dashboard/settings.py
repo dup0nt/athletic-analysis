@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
+#load_dotenv(os.path.join(os.path.dirname(__file__), 'client_secret.env'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,8 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!t11=#pd$)nmw!y6te(gd9d^0g0z)$n+b139k9xd4^+kzg@3@4'
-
+try: 
+    SECRET_KEY = os.getenv('secret_key')
+except:
+    print("Django secret key fail")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -37,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +61,7 @@ ROOT_URLCONF = 'athletic_dashboard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,6 +69,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -121,3 +130,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#API Authentication process
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.strava.StravaOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+#Important -> hide this elements
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/connected/'
+SOCIAL_AUTH_STRAVA_SCOPE = ['activity:read_all']
+SOCIAL_AUTH_STRAVA_KEY = '115052' #Client ID from API Application
+
+try: 
+    SOCIAL_AUTH_STRAVA_SECRET = os.getenv("client_secret")
+except: 
+    print("Strava's Client Secret fail")
