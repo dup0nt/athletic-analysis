@@ -7,7 +7,7 @@ import polyline
 # Create your views here.
 def base_map(request):
     # Make your map object
-    main_map = folium.Map(location=[40.2035496536329, -8.475706624409243], zoom_start = 12) # Create base map
+    main_map = folium.Map(location=[40.21079056452753, -8.429058602283266], zoom_start = 12) # Create base map
     main_map_html = main_map._repr_html_() # Get HTML for website
 
     context = {
@@ -17,8 +17,9 @@ def base_map(request):
 
 def connected_map(request):
     # Make your map object
-    main_map = folium.Map(location=[40.2035496536329, -8.475706624409243], zoom_start = 12) # Create base map
+    main_map = folium.Map(location=[40.21079056452753, -8.429058602283266], zoom_start = 12) # Create base map
     user = request.user # Pulls in the Strava User data
+    print("Data user", user)
     strava_login = user.social_auth.get(provider='strava') # Strava login
     access_token = strava_login.extra_data['access_token'] # Strava Access token
     activites_url = "https://www.strava.com/api/v3/athlete/activities"
