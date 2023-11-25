@@ -140,7 +140,7 @@ AUTHENTICATION_BACKENDS = (
 
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/connected/'
-SOCIAL_AUTH_STRAVA_SCOPE = ['activity:read_all']
+SOCIAL_AUTH_STRAVA_SCOPE = ['activity:read_all'] #to give full perms
 SOCIAL_AUTH_STRAVA_KEY = '115052' #Client ID from API Application
 
 try: 

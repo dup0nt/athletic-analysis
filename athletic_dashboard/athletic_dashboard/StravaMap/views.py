@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import folium
+from folium import plugins
 import requests
 import pandas as pd
 import polyline
@@ -19,10 +20,10 @@ def connected_map(request):
     # Make your map object
     main_map = folium.Map(location=[40.21079056452753, -8.429058602283266], zoom_start = 12) # Create base map
     user = request.user # Pulls in the Strava User data
-    print("Data user", user)
     strava_login = user.social_auth.get(provider='strava') # Strava login
     access_token = strava_login.extra_data['access_token'] # Strava Access token
     activites_url = "https://www.strava.com/api/v3/athlete/activities"
+
 
     # Get activity data
     header = {'Authorization': 'Bearer ' + str(access_token)}
@@ -39,7 +40,7 @@ def connected_map(request):
     activities_df = pd.concat(activity_df_list)
     activities_df = activities_df.dropna(subset=['map.summary_polyline'])
     activities_df['polylines'] = activities_df['map.summary_polyline'].apply(polyline.decode)
-
+    
     # Plot Polylines onto Folium Map
     for pl in activities_df['polylines']:
         if len(pl) > 0: # Ignore polylines with length zero (Thanks Joukesmink for the tip)
@@ -51,7 +52,29 @@ def connected_map(request):
         "main_map":main_map_html
     }
     return render(request, 'index.html', context)
+    """
+    #   TESTER FOR  HEATMAP
 
+    coordinates = []
+
+    # Add polyline coordinates to the list
+    for pl in activities_df['polylines']:
+        if len(pl) > 0:
+            coordinates.extend(pl)
+
+    # Create a HeatMap layer using the coordinates
+    heat_map = plugins.HeatMap(coordinates)
+
+    # Add the HeatMap layer to the map
+    heat_map.add_to(main_map)
+
+    # Return HTML version of map
+    main_map_html = main_map._repr_html_()  # Get HTML for the website
+    context = {
+        "main_map": main_map_html
+    }
+    return render(request, 'index.html', context)
+    """
 # from django.shortcuts import render, redirect
 # from django.http import HttpResponse
 # import folium

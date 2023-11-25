@@ -13,8 +13,8 @@
 
 <!--NavBar-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">StravaMap</a>
-  <a class="navbar-brand" href="#">Data Analyser</a>
+  <a class="navbar-brand" href="">StravaMap</a>
+  <a class="navbar-brand" href="{% url 'data_analyser' %}">Data Analyser</a>
   <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -28,15 +28,14 @@
 </nav>
 <!--End NavBar-->
 
-<!--Begin Athelete Tester Container-->
+<!--Begin Map Container-->
 <div class="container">
     <div class="row mt-4">
         <div class="col-md-10 offset-md-1">
-            {{  }}
+            {{ df_html|safe }}
         </div>
     </div>
 </div>
-
-<!--End Athelete Tester Container>
+<!--End Map Container>
 
 </html>
